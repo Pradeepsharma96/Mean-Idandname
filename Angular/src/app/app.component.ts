@@ -1,60 +1,57 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpClientModule} from '@angular/common/http'
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
-
-
 import { OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-
+import { products } from './app.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnDestroy {
 
-  constructor(private appComponent: appComponent) {}
+export class AppComponent implements OnInit {
+
+  userForm: FormGroup;
+  userCount = 0;
+  users: any;
+
+  constructor(public products: products,
+    private formBuilder: FormBuilder) {}
 
   title = 'angular-nodejs-example';
 
-  userForm = new FormGroup({
-    Id: new FormControl('',  Validators.required),
-    Name: new FormControl('',  Validators.required),
-   //email: new FormControl('', Validators.nullValidator() && Validators.required)
-  });
 
-  const users any[];
-  userCount = 0;
 
-  destroy$: Subject<boolean> = new Subject<boolean>();
+
+
+  // destroy$: Subject<boolean> = new Subject<boolean>();
+
+  ngOnInit(){
+    this.userForm = this.formBuilder.group({
+      id: ['',  Validators.required],
+      name: ['',  Validators.required],
+     //email: ['', Validators.nullValidator() && Validators.required)
+      });
+
+  }
 
   onSubmit() {
-
-    this.appComponent.addUser(this.userForm.value).pipe(takeUntil(this.destroy$)).subscribe(data => {
-      console.log('message::::', data);
-      this.userCount = this.userCount + 1;
-      console.log(this.userCount);
-      this.userForm.reset();
-    });
+    console.log(this.userForm.value, 'userform1');
+    this.products.addTask(this.userForm.value.id, this.userForm.value.name);
   }
 
-  getAllUsers() {
-    this.appComponent.getUsers().pipe(takeUntil(this.destroy$)).subscribe((users: any[]) => {
-        this.users = users;
-    });
-  }
+  // getAllUsers() {
+  //   this.products.getTasks().subscribe((res: any[]) => {
+  //       this.users = res;
+  //   });
+  // }
 
-  ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
-  }
+  // ngOnDestroy() {
+  //   this.destroy$.next(true);
+  //   this.destroy$.unsubscribe();
+  // }
 }
 
 

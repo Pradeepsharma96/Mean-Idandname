@@ -19,13 +19,14 @@ app.get('/products/:id', (req,res)=>{
     return res.json(newData);
 })
 
-app.post('/addproducts',async (req,res)=>{
-    console.log({body: req.body});
-    const {id ,name}= req.body;
+app.post('/add-products',async (req,res)=>{
+    console.log(req.body, "result11");
+    const id = req.body.id;
+    const name = req.body.name;
     try{
         const newData = new NameModel({id: id, name: name});
         await newData.save();
-        return res.send(newData)
+        res.sendStatus(200);
     
     }
     catch(err){
@@ -34,6 +35,6 @@ app.post('/addproducts',async (req,res)=>{
     console.log(id,name);
     return res.send("Data Stored")
 })
-app.listen(5000,()=> console.log('server running'));
+app.listen(2000,()=> console.log('server running'));
 
 
